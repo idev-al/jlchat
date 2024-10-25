@@ -23,7 +23,6 @@ st.markdown("""
 # Initialize chat history
 if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "assistant", "content": "Ask me a question about iDev"}]
-
 # Google Drive API setup
 def fetch_files_from_drive(folder_id):
     credentials = Credentials.from_service_account_info(st.secrets["google_service_account"])
@@ -46,7 +45,7 @@ def fetch_files_from_drive(folder_id):
         
         # Read the .txt file content
         text_content = fh.read().decode("utf-8")
-        documents.append(text_content)  # Add the text content to documents
+        documents.append(Document(text=text_content))  # Wrap each text as a Document
     return documents
 
 # Load data from Google Drive
@@ -65,7 +64,7 @@ def load_data():
         system_prompt="""You are an expert on iDev. Keep answers technical and factual."""
     )
     
-    # Create VectorStoreIndex from downloaded docs
+    # Create VectorStoreIndex from Document objects
     index = VectorStoreIndex.from_documents(docs_content)
     return index
 
