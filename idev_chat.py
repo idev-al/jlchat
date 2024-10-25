@@ -8,6 +8,16 @@ openai.api_key = st.secrets.openai_key
 st.title("Chat with the iDev chat docs")
 st.info("web: https://idev.al", icon="📃")
 
+# Hide Streamlit branding
+hide_streamlit_style = """
+    <style>
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        header {visibility: hidden;} /* Hide header if needed */
+    </style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
 if "messages" not in st.session_state.keys():  # Initialize the chat messages history
     st.session_state.messages = [
         {
