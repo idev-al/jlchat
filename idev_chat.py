@@ -1,68 +1,84 @@
 import streamlit as st
 import openai
 from llama_index.llms.openai import OpenAI
-from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings
+from llama_index.core import VectorStoreIndex, Settings
+from google.oauth2.service_account import Credentials
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaIoBaseDownload
+import io
 
-st.set_page_config(page_title="Chat with the KB chat, powered by iDev", page_icon="🦙", layout="wide", initial_sidebar_state="auto", menu_items=None)
-openai.api_key = st.secrets.openai_key
-
+# Set up Streamlit app configurations
+st.set_page_config(page_title="Chat with the KB chat, powered by iDev", page_icon="🦙", layout="wide")
+openai.api_key = st.secrets["openai_key"]
 
 # Hide Streamlit branding
-hide_streamlit_style = """
+st.markdown("""
     <style>
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
         .stApp { overflow: hidden; }
     </style>
-"""
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
-if "messages" not in st.session_state.keys():  # Initialize the chat messages history
-    st.session_state.messages = [
-        {
-            "role": "assistant",
-            "content": "Ask me a question about iDev",
-        }
-    ]
+# Initialize chat history
+if "messages" not in st.session_state:
+    st.session_state.messages = [{"role": "assistant", "content": "Ask me a question about iDev"}]
 
+# Google Drive API setup
+def fetch_files_from_drive(folder_id):
+    credentials = Credentials.from_service_account_info(st.secrets["google_service_account"])
+    service = build('drive', 'v3', credentials=credentials)
+
+    query = f"'{folder_id}' in parents and mimeType='application/pdf'"
+    results = service.files().list(q=query).execute()
+    files = results.get('files', [])
+    
+    documents = []
+    for file in files:
+        request = service.files().get_media(fileId=file['id'])
+        fh = io.BytesIO()
+        downloader = MediaIoBaseDownload(fh, request)
+        done = False
+        while not done:
+            status, done = downloader.next_chunk()
+        fh.seek(0)
+        documents.append(fh.read())
+    return documents
+
+# Load data from Google Drive
 @st.cache_resource(show_spinner=False)
 def load_data():
-    reader = SimpleDirectoryReader(input_dir="./data", recursive=True)
-    docs = reader.load_data()
+    folder_id = "1eqywoCnxVleDfB2xkfPCz8wCb9k9QPdb"  # Replace with your actual folder ID
+    docs_content = fetch_files_from_drive(folder_id)
+    
+    # Initialize and configure LLM
     Settings.llm = OpenAI(
         model="gpt-4o-mini",
         temperature=0.2,
-        system_prompt="""You are an expert on 
-        iDev and your job is to answer technical questions. 
-        Assume that all questions are related 
-        to iDev. Keep your answers technical and based on 
-        facts – do not hallucinate features.""",
+        system_prompt="""You are an expert on iDev. Keep answers technical and factual."""
     )
-    index = VectorStoreIndex.from_documents(docs)
+    # Create VectorStoreIndex from downloaded docs
+    index = VectorStoreIndex.from_documents(docs_content)
     return index
-
 
 index = load_data()
 
-if "chat_engine" not in st.session_state.keys():  # Initialize the chat engine
-    st.session_state.chat_engine = index.as_chat_engine(
-        chat_mode="condense_question", verbose=True, streaming=True
-    )
+# Initialize chat engine
+if "chat_engine" not in st.session_state:
+    st.session_state.chat_engine = index.as_chat_engine(chat_mode="condense_question", verbose=True, streaming=True)
 
-if prompt := st.chat_input(
-    "Ask a question"
-):  # Prompt for user input and save to chat history
+# Chat interaction
+if prompt := st.chat_input("Ask a question"):
     st.session_state.messages.append({"role": "user", "content": prompt})
 
-for message in st.session_state.messages:  # Write message history to UI
+for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.write(message["content"])
 
-# If last message is not from assistant, generate a new response
-if st.session_state.messages[-1]["role"] != "assistant":
+# If last message is from user, generate a response
+if st.session_state.messages[-1]["role"] == "user":
     with st.chat_message("assistant"):
         response_stream = st.session_state.chat_engine.stream_chat(prompt)
         st.write_stream(response_stream.response_gen)
-        message = {"role": "assistant", "content": response_stream.response}
-        # Add response to message history
-        st.session_state.messages.append(message)
+        response_message = {"role": "assistant", "content": response_stream.response}
+        st.session_state.messages.append(response_message)
