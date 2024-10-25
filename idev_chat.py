@@ -29,7 +29,8 @@ def fetch_files_from_drive(folder_id):
     credentials = Credentials.from_service_account_info(st.secrets["google_service_account"])
     service = build('drive', 'v3', credentials=credentials)
 
-    query = f"'{folder_id}' in parents and mimeType='application/pdf'"
+    # Query only .txt files in the specified folder
+    query = f"'{folder_id}' in parents and mimeType='text/plain'"
     results = service.files().list(q=query).execute()
     files = results.get('files', [])
     
@@ -42,14 +43,20 @@ def fetch_files_from_drive(folder_id):
         while not done:
             status, done = downloader.next_chunk()
         fh.seek(0)
-        documents.append(fh.read())
+        
+        # Read the .txt file content
+        text_content = fh.read().decode("utf-8")
+        documents.append(text_content)  # Add the text content to documents
     return documents
 
 # Load data from Google Drive
 @st.cache_resource(show_spinner=False)
 def load_data():
-    folder_id = "1eqywoCnxVleDfB2xkfPCz8wCb9k9QPdb"  # Replace with your actual folder ID
+    folder_id = "1eqywoCnxVleDfB2xkfPCz8wCb9k9QPdb"  # Google Drive folder ID
     docs_content = fetch_files_from_drive(folder_id)
+    
+    # Check if documents are loaded
+    print("Documents fetched from Google Drive:", docs_content)  # Debugging output
     
     # Initialize and configure LLM
     Settings.llm = OpenAI(
@@ -57,12 +64,12 @@ def load_data():
         temperature=0.2,
         system_prompt="""You are an expert on iDev. Keep answers technical and factual."""
     )
+    
     # Create VectorStoreIndex from downloaded docs
     index = VectorStoreIndex.from_documents(docs_content)
     return index
 
 index = load_data()
-print("Documents fetched from Google Drive:", docs_content)
 
 # Initialize chat engine
 if "chat_engine" not in st.session_state:
