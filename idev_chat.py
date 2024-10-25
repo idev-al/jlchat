@@ -6,7 +6,7 @@ from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
 import io
-import PyMuPDF  # Import PyMuPDF for PDF handling
+import pymupdf  # Import PyMuPDF for PDF handling
 
 # Set up Streamlit app configurations
 st.set_page_config(page_title="Chat with the KB chat, powered by iDev", page_icon="🦙", layout="wide")
