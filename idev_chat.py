@@ -73,7 +73,7 @@ async def chat(request: ChatRequest):
 
 # Function to run FastAPI in a separate thread
 def run_fastapi():
-    uvicorn.run(api_app, host="0.0.0.0", port=8000)
+    uvicorn.run(api_app, host="0.0.0.0", port=8001)
 
 # Start FastAPI in a new thread
 threading.Thread(target=run_fastapi, daemon=True).start()
