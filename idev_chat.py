@@ -20,11 +20,10 @@ def load_data():
     reader = SimpleDirectoryReader(input_dir="./data", recursive=True)
     docs = reader.load_data()
     Settings.llm = OpenAI(
-        model="gpt-3.5-turbo",
+        model="gpt-40-mini",
         temperature=0.2,
         system_prompt="""You are an expert on 
-        the Streamlit Python library and your 
-        job is to answer technical questions. 
+        iDev. 
         Assume that all questions are related 
         to the Streamlit Python library. Keep 
         your answers technical and based on 
