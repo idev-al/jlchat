@@ -62,6 +62,7 @@ def load_data():
     return index
 
 index = load_data()
+print("Documents fetched from Google Drive:", docs_content)
 
 # Initialize chat engine
 if "chat_engine" not in st.session_state:
