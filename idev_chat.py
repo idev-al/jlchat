@@ -3,7 +3,7 @@ import openai
 from llama_index.llms.openai import OpenAI
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings
 
-st.set_page_config(page_title="Chat with the KB chat, powered by iDev", page_icon="🦙", layout="centered", initial_sidebar_state="auto", menu_items=None)
+st.set_page_config(page_title="Chat with the KB chat, powered by iDev", page_icon="🦙", layout="wide", initial_sidebar_state="auto", menu_items=None)
 openai.api_key = st.secrets.openai_key
 
 
