@@ -25,7 +25,7 @@ def load_data():
         system_prompt="""You are an expert on 
         iDev. 
         Assume that all questions are related 
-        to the Streamlit Python library. Keep 
+        to iDev. Keep 
         your answers technical and based on 
         facts – do not hallucinate features.""",
     )
