@@ -34,6 +34,14 @@ if "chat_engine" not in st.session_state:
 # User input for the chatbot
 prompt = st.chat_input("Ask a question")
 
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
+
 # Handle chat input and responses within Streamlit
 if prompt:
     st.session_state.messages.append({"role": "user", "content": prompt})
