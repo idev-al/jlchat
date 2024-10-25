@@ -32,7 +32,7 @@ if "chat_engine" not in st.session_state:
     )
 
 # User input for the chatbot
-prompt = st.chat_input("Ask a question")
+prompt = st.chat_input("Ask a question") 
 
 hide_streamlit_style = """
             <style>
