@@ -6,6 +6,7 @@ from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
 import io
+import PyMuPDF  # Import PyMuPDF for PDF handling
 
 # Set up Streamlit app configurations
 st.set_page_config(page_title="Chat with the KB chat, powered by iDev", page_icon="🦙", layout="wide")
@@ -23,13 +24,14 @@ st.markdown("""
 # Initialize chat history
 if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "assistant", "content": "Ask me a question about iDev"}]
+
 # Google Drive API setup
 def fetch_files_from_drive(folder_id):
     credentials = Credentials.from_service_account_info(st.secrets["google_service_account"])
     service = build('drive', 'v3', credentials=credentials)
 
-    # Query only .txt files in the specified folder
-    query = f"'{folder_id}' in parents and mimeType='text/plain'"
+    # Query for .txt and .pdf files in the specified folder
+    query = f"'{folder_id}' in parents and (mimeType='text/plain' or mimeType='application/pdf')"
     results = service.files().list(q=query).execute()
     files = results.get('files', [])
     
@@ -43,19 +45,33 @@ def fetch_files_from_drive(folder_id):
             status, done = downloader.next_chunk()
         fh.seek(0)
         
-        # Read the .txt file content
-        text_content = fh.read().decode("utf-8")
-        documents.append(Document(text=text_content))  # Wrap each text as a Document
+        # Process .txt files
+        if file['mimeType'] == 'text/plain':
+            text_content = fh.read().decode("utf-8")
+            documents.append(Document(text=text_content))
+        
+        # Process .pdf files using PyMuPDF
+        elif file['mimeType'] == 'application/pdf':
+            pdf_text = extract_text_from_pdf(fh)
+            documents.append(Document(text=pdf_text))
+    
     return documents
+
+# Function to extract text from PDF files using PyMuPDF
+def extract_text_from_pdf(file):
+    text_content = ""
+    pdf_document = PyMuPDF.open(file)  # Open the PDF file
+    for page_num in range(pdf_document.page_count):  # Loop through each page
+        page = pdf_document.page(page_num)
+        text_content += page.get_text("text")  # Extract text from each page
+    pdf_document.close()
+    return text_content
 
 # Load data from Google Drive
 @st.cache_resource(show_spinner=False)
 def load_data():
     folder_id = "1eqywoCnxVleDfB2xkfPCz8wCb9k9QPdb"  # Google Drive folder ID
     docs_content = fetch_files_from_drive(folder_id)
-    
-    # Check if documents are loaded
-    print("Documents fetched from Google Drive:", docs_content)  # Debugging output
     
     # Initialize and configure LLM
     Settings.llm = OpenAI(
