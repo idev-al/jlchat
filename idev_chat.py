@@ -5,8 +5,7 @@ from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings
 
 st.set_page_config(page_title="Chat with the KB chat, powered by iDev", page_icon="🦙", layout="centered", initial_sidebar_state="auto", menu_items=None)
 openai.api_key = st.secrets.openai_key
-st.title("Chat with the iDev chat docs")
-st.info("web: https://idev.al", icon="📃")
+
 
 # Hide Streamlit branding
 hide_streamlit_style = """
