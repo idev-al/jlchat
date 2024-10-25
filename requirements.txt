@@ -4,6 +4,7 @@ llama-index
 llama-index-llms-openai
 nltk
 pypdf
+pymupdf
 google-auth
 google-auth-oauthlib
 google-auth-httplib2
