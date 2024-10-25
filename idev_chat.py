@@ -9,7 +9,7 @@ import io
 
 # Set up Streamlit app configurations
 st.set_page_config(page_title="Chat with the KB chat, powered by iDev", page_icon="🦙", layout="wide")
-openai.api_key = st.secrets["openai_key"]
+openai.api_key = st.secrets.openai_key
 
 # Hide Streamlit branding
 st.markdown("""
