@@ -1,0 +1,7 @@
+[theme]
+base = "light"  # Set the base theme to light (or "dark" for dark mode)
+primaryColor = "#4CAF50"  # Customize the primary color
+backgroundColor = "#f8f9fa"  # Light background color for the app
+secondaryBackgroundColor = "#ffffff"  # Light background for containers and widgets
+textColor = "#333333"  # Text color
+font = "sans serif"  # Font choice, options include "sans serif", "serif", and "monospace"
