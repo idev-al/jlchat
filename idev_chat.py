@@ -6,6 +6,7 @@ from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
 import io
+import tempfile
 import pymupdf  # Import PyMuPDF for PDF handling
 
 # Set up Streamlit app configurations
@@ -58,13 +59,22 @@ def fetch_files_from_drive(folder_id):
     return documents
 
 # Function to extract text from PDF files using PyMuPDF
+# Function to extract text from PDF files using PyMuPDF
 def extract_text_from_pdf(file):
     text_content = ""
-    pdf_document = pymupdf.open(file)  # Open the PDF file
-    for page_num in range(pdf_document.page_count):  # Loop through each page
-        page = pdf_document.page(page_num)
-        text_content += page.get_text("text")  # Extract text from each page
-    pdf_document.close()
+
+    # Create a temporary file to save the BytesIO content
+    with tempfile.NamedTemporaryFile(delete=True, suffix=".pdf") as temp_file:
+        temp_file.write(file.read())  # Write the BytesIO content to the temp file
+        temp_file.flush()
+
+        # Open the temp file with PyMuPDF
+        pdf_document = pymupdf.open(temp_file.name)  
+        for page_num in range(pdf_document.page_count):  # Loop through each page
+            page = pdf_document.page(page_num)
+            text_content += page.get_text("text")  # Extract text from each page
+        pdf_document.close()
+
     return text_content
 
 # Load data from Google Drive
