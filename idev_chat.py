@@ -23,7 +23,7 @@ st.markdown("""
 
 # Initialize chat history
 if "messages" not in st.session_state:
-    st.session_state.messages = [{"role": "assistant", "content": "Ask me a question about iDev"}]
+    st.session_state.messages = [{"role": "assistant", "content": "Ask me a question about Sistema.bio"}]
 
 # Google Drive API setup
 def fetch_files_from_drive(folder_id):
@@ -70,14 +70,14 @@ def extract_text_from_pdf(file):
 # Load data from Google Drive
 @st.cache_resource(show_spinner=False)
 def load_data():
-    folder_id = "1eqywoCnxVleDfB2xkfPCz8wCb9k9QPdb"  # Google Drive folder ID
+    folder_id = "1p9H982LnozcFoP7ieuLfMNBepb2PdyR2"  # Google Drive folder ID
     docs_content = fetch_files_from_drive(folder_id)
     
     # Initialize and configure LLM
     Settings.llm = OpenAI(
         model="gpt-4o-mini",
         temperature=0.2,
-        system_prompt="""You are an expert on iDev. Keep answers technical and factual."""
+        system_prompt="""You are an expert on Sistema.bio. Keep answers technical and factual."""
     )
     
     # Create VectorStoreIndex from Document objects
