@@ -18,7 +18,17 @@ st.markdown("""
     <style>
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
-        .stApp { overflow: hidden; }
+        .stApp { overflow: hidden; padding: 0; }
+        
+        /* Remove padding around the content */
+        .block-container {
+            padding: 0 1rem;  /* Adjust the padding values as needed */
+        }
+        
+        /* Optional: Adjust chat input padding */
+        .css-1y4p8pa textarea {
+            padding: 5px;  /* Adjust chat input padding */
+        }
     </style>
 """, unsafe_allow_html=True)
 
