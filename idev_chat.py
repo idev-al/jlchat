@@ -106,7 +106,7 @@ if prompt := st.chat_input("Ask a question"):
     st.session_state.messages.append({"role": "user", "content": prompt})
 
 for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
+    with st.chat_message(message["role"],  avatar=st.image('https://sistema.bio/wp-content/uploads/2024/05/favicon-150x150.png')):
         st.write(message["content"])
 
 # If last message is from user, generate a response
