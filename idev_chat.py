@@ -60,7 +60,7 @@ def fetch_files_from_drive(folder_id):
 # Function to extract text from PDF files using PyMuPDF
 def extract_text_from_pdf(file):
     text_content = ""
-    pdf_document = PyMuPDF.open(file)  # Open the PDF file
+    pdf_document = pymupdf.open(file)  # Open the PDF file
     for page_num in range(pdf_document.page_count):  # Loop through each page
         page = pdf_document.page(page_num)
         text_content += page.get_text("text")  # Extract text from each page
