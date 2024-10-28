@@ -117,8 +117,9 @@ for message in st.session_state.messages:
 
 # If last message is from user, generate a response
 if st.session_state.messages[-1]["role"] == "user":
-    with st.chat_message("assistant"):
+    with st.chat_message("assistant", avatar="https://sistema.bio/wp-content/uploads/2024/05/favicon-150x150.png"):
         response_stream = st.session_state.chat_engine.stream_chat(prompt)
         st.write_stream(response_stream.response_gen)
         response_message = {"role": "assistant", "content": response_stream.response}
         st.session_state.messages.append(response_message)
+
