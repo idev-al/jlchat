@@ -106,7 +106,13 @@ if prompt := st.chat_input("Ask a question"):
     st.session_state.messages.append({"role": "user", "content": prompt})
 
 for message in st.session_state.messages:
-    with st.chat_message(message["role"],  avatar=st.image('https://sistema.bio/wp-content/uploads/2024/05/favicon-150x150.png')):
+    if message["role"] == "assistant":
+        # Use the URL directly for the assistant's avatar
+        avatar_url = "https://sistema.bio/wp-content/uploads/2024/05/favicon-150x150.png"
+    else:
+        avatar_url = None  # No avatar for the user or you can set another URL
+
+    with st.chat_message(message["role"], avatar=avatar_url):
         st.write(message["content"])
 
 # If last message is from user, generate a response
