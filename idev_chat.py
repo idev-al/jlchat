@@ -16,37 +16,9 @@ openai.api_key = st.secrets.openai_key
 # Hide Streamlit branding
 st.markdown("""
     <style>
-        /* Hide Streamlit branding */
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
-        
-        /* Set app background color */
-        .stApp {
-            background-color: #f8f9fa;
-        }
-        
-        /* Chat message styling for light mode */
-        .st-chat-message {
-            background-color: #ffffff;
-            color: #333333;
-            border-radius: 8px;
-            padding: 10px;
-            margin: 10px 0;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        /* User messages */
-        .st-chat-message.user {
-            background-color: #e9f5ff;
-            color: #333333;
-            text-align: right;
-        }
-        
-        /* Assistant messages */
-        .st-chat-message.assistant {
-            background-color: #f0f4f8;
-            color: #333333;
-        }
+        .stApp { overflow: hidden; }
     </style>
 """, unsafe_allow_html=True)
 
