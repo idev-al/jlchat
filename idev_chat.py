@@ -98,9 +98,9 @@ def load_data():
     Settings.llm = OpenAI(
         model="gpt-4o-mini",
         temperature=0.2,
-        system_prompt="""You are an expert on Sistema.bio.
-    Your primary job is to answer technical questions based on the context of the uploaded documents. Keep answers short and factual.
-    However, if the answer to a question isn't found in the documents, please provide a contact us link: https://sistema.bio/contact-us/"""
+        system_prompt="""You are a virtual assistant for JLB Law Group.
+    Your primary job is to answer questions based on the context of the uploaded documents. Keep answers short and factual.
+    However, if the answer to a question isn't found in the documents, please provide a contact us link: https://www.jlblawgroup.com/contact/"""
     )
     
     # Create VectorStoreIndex from Document objects
