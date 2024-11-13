@@ -83,10 +83,18 @@ def extract_text_from_pdf(file):
         # Loop through each page and extract text
         for page_num in range(pdf_document.page_count):  # Loop through each page
             page = pdf_document.load_page(page_num)  # Correct method to load a page
-            text_content += page.get_text("text")  # Extract text from each page
+            page_text = page.get_text("text")  # Extract text from each page
+            text_content += page_text
+            
+            # Debug logging: Print text extracted from each page (first 500 characters)
+            print(f"Extracted text from page {page_num + 1}: {page_text[:500]}")  # Show first 500 characters
+
         pdf_document.close()
 
+    # Final debug print: Total text extracted from PDF
+    print(f"Total extracted text content from PDF: {text_content[:1000]}")  # Show first 1000 characters
     return text_content
+
 
 # Load data from Google Drive
 @st.cache_resource(show_spinner=False)
