@@ -121,7 +121,7 @@ if prompt := st.chat_input("Ask a question"):
 for message in st.session_state.messages:
     if message["role"] == "assistant":
         # Use the URL directly for the assistant's avatar
-        avatar_url = "https://www.jlblawgroup.com/wp-content/uploads/2024/08/cropped-faviconV2-192x192.png"
+        avatar_url = "https://jlb.idev.al/wp-content/uploads/2024/08/cropped-faviconV2-192x192.png"
     else:
         avatar_url = None  # No avatar for the user or you can set another URL
 
@@ -130,7 +130,7 @@ for message in st.session_state.messages:
 
 # If last message is from user, generate a response
 if st.session_state.messages[-1]["role"] == "user":
-    with st.chat_message("assistant", avatar="https://www.jlblawgroup.com/wp-content/uploads/2024/08/cropped-faviconV2-192x192.png"):
+    with st.chat_message("assistant", avatar="https://jlb.idev.al/wp-content/uploads/2024/08/cropped-faviconV2-192x192.png"):
         response_stream = st.session_state.chat_engine.stream_chat(prompt)
         st.write_stream(response_stream.response_gen)
         response_message = {"role": "assistant", "content": response_stream.response}
